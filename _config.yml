@@ -5,14 +5,16 @@
 # Site
 title: LiuJun
 subtitle: 顺其自然
-description: 平平淡淡才是真
-author: Liu Jun
-language: zh-Hans
+description: [android, github, 技术博客, 移动开发, google]
+author: LiuJun
+language: zh-CN
 timezone:
+keywords: [android, github, 技术博客, 移动开发, google]
+avatar: http://7xp2tq.com1.z0.glb.clouddn.com/avatar.jpg
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://liujun.github.io
+url: http://liujun.info/
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -63,7 +65,22 @@ pagination_dir: page
 # Extensions
 ## Plugins: http://hexo.io/plugins/
 ## Themes: http://hexo.io/themes/
-theme: landscape
+theme: maupassant
+
+plugins:
+- hexo-generator-cname
+
+
+#Feed Atom
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20
+  hub:
+
+#sitemap
+sitemap:
+  path: sitemap.xml
 
 # Deployment
 ## Docs: http://hexo.io/docs/deployment.html
