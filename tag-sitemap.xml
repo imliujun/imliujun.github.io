@@ -1,25 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="sitemap.xsl"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <url>
-        <loc>http://www.liujun.info</loc>
-        <changefreq>daily</changefreq>
-        <priority>1</priority>
-    </url>
 
     <url>
-        <loc>http://www.liujun.info/2015/12/24/Bye2015Hi2016/</loc>
+        <loc>http://www.liujun.info/tags/%E9%9A%8F%E7%AC%94/</loc>
         <lastmod>2015-12-24T09:36:27.000Z</lastmod>
         <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.liujun.info/2015/12/10/hello-world/</loc>
-        <lastmod>2015-12-10T10:22:58.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
+        <priority>0.2</priority>
     </url>
 
 </urlset>

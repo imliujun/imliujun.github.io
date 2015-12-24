@@ -4,7 +4,7 @@
   <subtitle><![CDATA[顺其自然]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://www.liujun.info/"/>
-  <updated>2015-12-10T10:22:58.000Z</updated>
+  <updated>2015-12-24T09:36:27.000Z</updated>
   <id>http://www.liujun.info/</id>
   
   <author>
@@ -13,6 +13,25 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Bye2015Hi2016]]></title>
+    <link href="http://www.liujun.info/2015/12/24/Bye2015Hi2016/"/>
+    <id>http://www.liujun.info/2015/12/24/Bye2015Hi2016/</id>
+    <published>2015-12-24T08:12:45.000Z</published>
+    <updated>2015-12-24T09:36:27.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="u5DE5_u4F5C"><a href="#u5DE5_u4F5C" class="headerlink" title="工作"></a>工作</h2><p>小创业公司，除了一个服务端的大叔，其他人都是90后。年轻的团队，没有太多的规矩和约束</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="u5DE5_u4F5C"><a href="#u5DE5_u4F5C" class="headerlink" title="工作"></a>工作</h2><p>小创业公司，除了一个服务端的大叔，其他人都是90后。年轻的团队，没有太多的规矩和约束</p>
+]]>
+    </summary>
+    
+      <category term="随笔" scheme="http://www.liujun.info/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+      <category term="情感" scheme="http://www.liujun.info/categories/%E6%83%85%E6%84%9F/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Hello World]]></title>
