@@ -81,10 +81,13 @@ feed:
 #sitemap
 sitemap:
   path: sitemap.xml
+baidusitemap:
+  path: baidusitemap.xml
 
 # Deployment
 ## Docs: http://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: https://github.com/imliujun/imliujun.github.io.git
-  branch: master
+  repo:
+    github: https://github.com/imliujun/imliujun.github.io.git,master
+    gitcafe: https://gitcafe.com/LiuJun/LiuJun.git,gitcafe-pages
