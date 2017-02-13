@@ -90,4 +90,4 @@ deploy:
   type: git
   repo:
     github: https://github.com/imliujun/imliujun.github.io.git,master
-    gitcafe: https://gitcafe.com/LiuJun/LiuJun.git,gitcafe-pages
+    ##gitcafe: https://gitcafe.com/LiuJun/LiuJun.git,gitcafe-pages
