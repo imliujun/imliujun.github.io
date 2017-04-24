@@ -3,12 +3,17 @@
 
     <sitemap>
         <loc>http://www.liujun.info/post-sitemap.xml</loc>
-        <lastmod>2015-12-10T10:22:58.000Z</lastmod>
+        <lastmod>2017-04-24T23:27:11.000Z</lastmod>
     </sitemap>
 
     <sitemap>
         <loc>http://www.liujun.info/page-sitemap.xml</loc>
         <lastmod>2017-02-13T12:18:35.000Z</lastmod>
+    </sitemap>
+
+    <sitemap>
+        <loc>http://www.liujun.info/tag-sitemap.xml</loc>
+        <lastmod>2017-04-24T23:27:11.000Z</lastmod>
     </sitemap>
 
 </sitemapindex>
