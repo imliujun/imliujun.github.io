@@ -3,13 +3,13 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: LiuJun
-subtitle: 顺其自然
-description: [android, github, 技术博客, 移动开发, google]
+title: 大脑好饿
+subtitle: 补充大脑营养
+description: 微信公众号：大脑好饿
 author: LiuJun
 language: zh-CN
 timezone:
-keywords: [android, github, 技术博客, 移动开发, google]
+keywords: [android, 程序员, 开发心得, 移动开发]
 avatar: http://7xp2tq.com1.z0.glb.clouddn.com/avatar.jpg
 
 # URL
@@ -67,11 +67,10 @@ pagination_dir: page
 # Extensions
 ## Plugins: http://hexo.io/plugins/
 ## Themes: http://hexo.io/themes/
-theme: maupassant
+theme: maupassant-hexo
 
 plugins:
-- hexo-generator-cname
-
+# - hexo-generator-cname
 
 #Feed Atom
 feed:
@@ -93,3 +92,23 @@ deploy:
   repo:
     github: https://github.com/imliujun/imliujun.github.io.git,master
     ##gitcafe: https://gitcafe.com/LiuJun/LiuJun.git,gitcafe-pages
+
+qiniu:
+  offline: false ##是否离线. 离线状态将使用本地地址渲染
+  sync: true ##是否同步
+  bucket: blog
+  secret_file: ../config/qiniu_secret.json
+  access_key:
+  secret_key:
+  dirPrefix: static ##上传的资源子目录前缀.如设置，需与urlPrefix同步
+  urlPrefix: http://ooyo0saao.bkt.clouddn.com/static ##外链前缀.
+  up_host: http://up-z1.qiniu.com ##上传服务器路径,如选择华北区域的话配置为http://up-z1.qiniu.com
+  local_dir: static ##本地目录.
+  update_exist: true ##是否更新已经上传过的文件(仅文件大小不同或在上次上传后进行更新的才会重新上传)
+  image:
+    folder: images
+    extend:
+  js:
+    folder: js
+  css:
+    folder: css
