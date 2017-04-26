@@ -2,8 +2,36 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
     <url>
-        <loc>http://www.liujun.info/tags/Lottie-%E7%9B%B4%E6%92%AD-%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD-%E7%A4%BC%E7%89%A9-%E5%8A%A8%E7%94%BB/</loc>
-        <lastmod>2017-04-26T19:19:24.000Z</lastmod>
+        <loc>http://www.liujun.info/tags/Lottie/</loc>
+        <lastmod>2017-04-26T19:40:15.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.liujun.info/tags/%E7%9B%B4%E6%92%AD/</loc>
+        <lastmod>2017-04-26T19:40:15.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.liujun.info/tags/%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD/</loc>
+        <lastmod>2017-04-26T19:40:15.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.liujun.info/tags/%E7%A4%BC%E7%89%A9/</loc>
+        <lastmod>2017-04-26T19:40:15.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.liujun.info/tags/%E5%8A%A8%E7%94%BB/</loc>
+        <lastmod>2017-04-26T19:40:15.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
