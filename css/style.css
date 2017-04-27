@@ -16,6 +16,14 @@ html, button, input, select, textarea,
   /* Set your content font stack here: */
   font-family: "PingFangSC-Regular", Helvetica, "Helvetica Neue", "Segoe UI", "Hiragino Sans GB", "Source Han Sans CN", "Microsoft YaHei", "STHeiti", "WenQuanYi Micro Hei", sans-serif; }
 
+.div_right_bottom {
+  width: 200px;
+  top: 50%;
+  right: 0px;
+  position: fixed;
+  margin-top: -100px;
+  _position: absolute; }
+
 body {
   background-color: #FFF;
   color: #444;
