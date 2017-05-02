@@ -104,7 +104,7 @@ qiniu:
   urlPrefix: http://ooyo0saao.bkt.clouddn.com/static ##外链前缀.
   up_host: http://up-z1.qiniu.com ##上传服务器路径,如选择华北区域的话配置为http://up-z1.qiniu.com
   local_dir: static ##本地目录.
-  update_exist: true ##是否更新已经上传过的文件(仅文件大小不同或在上次上传后进行更新的才会重新上传)
+  update_exist: false ##是否更新已经上传过的文件(仅文件大小不同或在上次上传后进行更新的才会重新上传)
   image:
     folder: images
     extend:
