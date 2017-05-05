@@ -11,6 +11,8 @@ toc: true
 comments: true
 description: Lottie，轻松实现炫酷动画，让 app 加载动画像加载图片一样简单。几分钟时间让你学会动态加载资源实现炫酷礼物动画，完美适配安卓各机型。
 ---
+>本文已授权微信公众号：鸿洋（hongyangAndroid）原创首发。
+
 本文主要讲解 [Lottie](https://github.com/airbnb/lottie-android) 库动态加载 SD 卡上带图片资源的动画，并对各种机型做全屏适配。
 
 Lottie 的优点：

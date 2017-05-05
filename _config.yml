@@ -91,7 +91,7 @@ deploy:
   type: git
   repo:
     github: https://github.com/imliujun/imliujun.github.io.git,master
-    ##gitcafe: https://gitcafe.com/LiuJun/LiuJun.git,gitcafe-pages
+    coding: https://git.coding.net/imliujun/imliujun.git,master
 
 qiniu:
   offline: false ##是否离线. 离线状态将使用本地地址渲染
