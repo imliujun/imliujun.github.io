@@ -7,3 +7,4 @@ public/
 .deploy*/
 themes/maupassant-hexo/
 static/
+_config.yml
