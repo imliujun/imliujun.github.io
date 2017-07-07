@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.imliujun.com/"/>
-  <updated>2017-07-07T08:44:31.000Z</updated>
+  <updated>2017-07-07T09:08:50.000Z</updated>
   <id>http://www.imliujun.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://www.imliujun.com/gradle1.html"/>
     <id>http://www.imliujun.com/gradle1.html</id>
     <published>2017-07-07T08:19:23.000Z</published>
-    <updated>2017-07-07T08:44:31.000Z</updated>
+    <updated>2017-07-07T09:08:50.000Z</updated>
     
     <content type="html"><![CDATA[<p>啥也不说了，直接进入主题吧。本篇文章主要根据实际开发中遇到的需求，讲解使用 <code>Gradle</code> 对应用的不同版本进行个性化定制。</p>
 <h1 id="场景介绍"><a href="#场景介绍" class="headerlink" title="场景介绍"></a>场景介绍</h1><ol>
@@ -37,12 +37,12 @@
 <p>根目录下的 <code>build.gradle</code> 文件进行如下配置，主要是将版本号和测试包的序号抽取出来：</p>
 <figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">ext &#123;</div><div class="line">    versionName = <span class="string">"2.0.2"</span></div><div class="line">    testNum = <span class="string">"0001"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">def</span> getTestVersionName() &#123;</div><div class="line">    <span class="keyword">return</span> String.format(<span class="string">"%s.%s"</span>, rootProject.ext.versionName,</div><div class="line">            rootProject.ext.testNum)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> gitVersionCode() &#123;</div><div class="line">    <span class="keyword">def</span> <span class="keyword">count</span> = <span class="string">"git rev-list HEAD --count"</span>.execute().text.trim()</div><div class="line">    <span class="keyword">return</span> <span class="keyword">count</span>.isInteger() ? <span class="keyword">count</span>.<span class="keyword">toInteger</span>() : <span class="number">0</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>下面就根据场景来依次介绍对应的配置代码。</p>
-<h2 id="1-配置服务器版本"><a href="#1-配置服务器版本" class="headerlink" title="1. 配置服务器版本"></a>1. 配置服务器版本</h2><p>这里创建了三个 flavor，分别是 <code>offline 测试服</code>、<code>online 正式服</code>、<code>admin 超管服</code>。并且通过 <code>buildConfigField</code> 动态配置服务器的 URL 常量值到编译后自动生成的 <code>BuildConfig</code> 类中。</p>
+<h2 id="配置服务器版本"><a href="#配置服务器版本" class="headerlink" title="配置服务器版本"></a>配置服务器版本</h2><p>这里创建了三个 flavor，分别是 <code>offline 测试服</code>、<code>online 正式服</code>、<code>admin 超管服</code>。并且通过 <code>buildConfigField</code> 动态配置服务器的 URL 常量值到编译后自动生成的 <code>BuildConfig</code> 类中。</p>
 <p><img src="http://images.imliujun.com/static/images/Gradle/BuildConfig.png" alt="自动生成的 BuildConfig 类" title="BuildConfig"></p>
-<p>图中可以看到，不止有 <code>DOMAIN_NAME</code> 常量值，还有一个 <code>FLAVOR</code> 常量。这个 <code>FLAVOR</code> 常量中的值是 <code>offline</code> ,代表当前在 <code>offline</code> 这个版本上面。那怎么切换到其他的服务器呢？</p>
+<p>图中可以看到，不止有 <code>DOMAIN_NAME</code> 常量值，还有一个 <code>FLAVOR</code> 常量。这个 <code>FLAVOR</code> 常量中的值是 <code>offline</code>,代表当前在 <code>offline</code> 这个版本上面。那怎么切换到其他的服务器呢？</p>
 <p><img src="http://images.imliujun.com/static/images/Gradle/SwitchBuildVariants.png" alt="切换不同的变种版本" title="BuildVariants"></p>
-<p>点开左下角的 <code>Build Variants</code>, 可以自由切换当前运行的版本。场景里面说的，需要在管理员包中开启一些高级的功能，可以判断 <code>FLAVOR</code> 的值是不是 <code>admin</code> ，如果是的话就显示管理员的操作布局。当然必不可少的要对用户权限进行校验哦。</p>
-<h2 id="2-定制-versionName"><a href="#2-定制-versionName" class="headerlink" title="2. 定制 versionName"></a>2. 定制 <code>versionName</code></h2><p>大家看上图 <code>BuildConfig</code> 类中 <code>VERSION_NAME</code> 常量的值为 <code>2.0.2.0001-debug</code>，当前是测试服的 <code>debug</code> 包，所以 versionName 应该是正常的 2.0.2 版本后面拼上当前出包的序号 0001 ，再拼上 <code>debug</code> 的后缀，所以完整的版本号是 <code>2.0.2.0001-debug</code>。</p>
+<p>点开左下角的 <code>Build Variants</code>, 可以自由切换当前运行的版本。需要在管理员包中开启一些高级的功能，可以判断 <code>FLAVOR</code> 的值是不是 <code>admin</code> ，如果是的话就显示管理员的操作布局。当然必不可少的要对用户权限进行校验哦。</p>
+<h2 id="定制-versionName"><a href="#定制-versionName" class="headerlink" title="定制 versionName"></a>定制 <code>versionName</code></h2><p>大家看上图 <code>BuildConfig</code> 类中 <code>VERSION_NAME</code> 常量的值为 <code>2.0.2.0001-debug</code>，当前是测试服的 <code>debug</code> 包，所以 versionName 应该是正常的 2.0.2 版本后面拼上当前出包的序号 0001 ，再拼上 <code>debug</code> 的后缀，所以完整的版本号是 <code>2.0.2.0001-debug</code>。</p>
 <p>看看不同服务器版本的 <code>VERSION_NAME</code> ：</p>
 <ul>
 <li><code>offlineRelease</code> 版本为 <code>2.0.2.0001</code></li>
@@ -54,20 +54,20 @@
 </ul>
 <p>如果我们接口需要上传版本号给服务器呢？肯定不能直接上传这些定制化后的 <code>VERSION_NAME</code>，那么我们在 <code>Gradle</code> 中增加一个 <code>buildConfigField</code> 将原始的版本号存起来就好了。</p>
 <figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">buildConfigField <span class="string">"String"</span>, <span class="string">"versionNumber"</span>, <span class="string">"\"$&#123;rootProject.ext.versionName&#125;\""</span></div></pre></td></tr></table></figure>
-<h2 id="3-versionCode-自增"><a href="#3-versionCode-自增" class="headerlink" title="3. versionCode 自增"></a>3. <code>versionCode</code> 自增</h2><p>这里采用了主流的方式，使用 <code>git</code> 的 <code>commit</code> 次数作为 <code>versionCode</code> 的值。不用担心这个值会超过 <code>int</code> 的上限，你得敲烂多少键盘才能提交 2147483648<br>次 <code>commit</code>。</p>
+<h2 id="versionCode-自增"><a href="#versionCode-自增" class="headerlink" title="versionCode 自增"></a><code>versionCode</code> 自增</h2><p>这里采用了主流的方式，使用 <code>git</code> 的 <code>commit</code> 次数作为 <code>versionCode</code> 的值。不用担心这个值会超过 <code>int</code> 的上限，你得敲烂多少键盘才能提交 2147483648<br>次 <code>commit</code>。</p>
 <figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> gitVersionCode() &#123;</div><div class="line">    <span class="keyword">def</span> <span class="keyword">count</span> = <span class="string">"git rev-list HEAD --count"</span>.execute().text.trim()</div><div class="line">    <span class="keyword">return</span> <span class="keyword">count</span>.isInteger() ? <span class="keyword">count</span>.<span class="keyword">toInteger</span>() : <span class="number">0</span></div><div class="line"> &#125;</div></pre></td></tr></table></figure>
-<h2 id="4-个性化渠道名"><a href="#4-个性化渠道名" class="headerlink" title="4. 个性化渠道名"></a>4. 个性化渠道名</h2><p><code>Gradle</code> 多渠道打包的文章太多了，相关的基础我就不讲了。简单讲下本文相关的配置吧。</p>
+<h2 id="个性化渠道名"><a href="#个性化渠道名" class="headerlink" title="个性化渠道名"></a>个性化渠道名</h2><p><code>Gradle</code> 多渠道打包的文章太多了，相关的基础我就不讲了。简单讲下本文相关的配置吧。</p>
 <p>通过定义 <code>manifestPlaceholders</code> 键值对，在 <code>AndroidManifest.xml</code> 文件中使用占位符的方式动态输入 <code>UMENG_APPKEY</code> 和 <code>UMENG_CHANNEL</code> 。</p>
 <p>然后在 <code>debug</code> 的 <code>buildType</code> 中修改渠道名为 <code>test</code>，在 <code>admin</code> 的 <code>Flavor</code> 中修改渠道名为 <code>admin</code>。如果选择 <code>adminDebug</code> 版本，则渠道名为 <code>test</code>，<code>buildType</code> 中的配置会覆盖掉 <code>Flavor</code> 中的配置。</p>
 <p>由于我们线上使用第三方加固，所以多渠道包就交给第三方加固软件来生成了。</p>
 <p>关于多渠道打包我还有两句话要说，以前使用 <code>Gradle</code> 进行多渠道打包，通过代码自定义修改 <code>apk</code> 文件的输出路径，<code>Android Studio</code> 编译的时候时不时的报一些文件找不到的错误，以前都是通过在 <code>Gradle</code> 文件中随便修改一点东西然后刷新一下 <code>Gradle</code> 文件来解决。现在我打包不修改输出路径，再也没遇到以前的那些问题了。</p>
 <p>建议大家使用 <code>assemble</code> 命令来进行打包，比如我要出一个测试包使用 <code>./gradlew assembleOfflineRelease</code> 命令，<code>apk</code> 文件生成在 <code>/build/outputs/apk/</code> 目录下。直接执行 <code>assemble</code> 命令是编译 <code>Build Variants</code> 中的所有包，如果你要编译指定版本的包，直接在 <code>assemble</code> 命令后面拼上指定的 <code>Build Variant</code> 就好了。</p>
-<h2 id="5-debug-包使用-release-签名"><a href="#5-debug-包使用-release-签名" class="headerlink" title="5. debug 包使用 release 签名"></a>5. <code>debug</code> 包使用 <code>release</code> 签名</h2><p>这个问题在 <code>eclipse</code> 时代，可以直接在设置里面配置 <code>debug</code> 签名文件为 <code>release</code> 的签名文件。<br>用 <code>Android Studio</code> 只需要在 <code>Gradle</code> 中配置就好了。</p>
+<h2 id="debug-包使用-release-签名"><a href="#debug-包使用-release-签名" class="headerlink" title="debug 包使用 release 签名"></a><code>debug</code> 包使用 <code>release</code> 签名</h2><p>这个问题在 <code>eclipse</code> 时代，可以直接在设置里面配置 <code>debug</code> 签名文件为 <code>release</code> 的签名文件。<br>用 <code>Android Studio</code> 只需要在 <code>Gradle</code> 中配置就好了。</p>
 <p>首先配置签名文件的信息：</p>
 <figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">signingConfigs &#123;</div><div class="line"> 	<span class="comment">//在这里配置相关的签名信息</span></div><div class="line">         keyStore &#123;</div><div class="line">             storeFile <span class="keyword">file</span>(<span class="string">"test.jks"</span>)</div><div class="line">             storePassword <span class="string">"111111"</span></div><div class="line">             keyAlias <span class="string">"test"</span></div><div class="line">             keyPassword <span class="string">"111111"</span></div><div class="line">         &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>然后在 <code>buildTypes</code> 中设置签名信息：</p>
 <figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            signingConfig signingConfigs.keyStore <span class="comment">//设置签名文件</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        debug &#123;</div><div class="line">            signingConfig signingConfigs.keyStore  <span class="comment">//设置签名文件</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<h2 id="6-日志开关"><a href="#6-日志开关" class="headerlink" title="6. 日志开关"></a>6. 日志开关</h2><p>这个太简单了，不想单独列出来。不过上面场景里面提出来了，就简单一行代码展示吧。</p>
+<h2 id="日志开关"><a href="#日志开关" class="headerlink" title="日志开关"></a>日志开关</h2><p>这个太简单了，不想单独列出来。不过上面场景里面提出来了，就简单一行代码展示吧。</p>
 <figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">release &#123;</div><div class="line">	<span class="comment">// 不显示Log</span></div><div class="line">		buildConfigField <span class="string">"boolean"</span>, <span class="string">"LOG_DEBUG"</span>, <span class="string">"false"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">debug &#123;</div><div class="line">	<span class="comment">// 显示Log</span></div><div class="line">	buildConfigField <span class="string">"boolean"</span>, <span class="string">"LOG_DEBUG"</span>, <span class="string">"true"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>在日志工具类中使用 <code>BuildConfig</code> 类中的 <code>LOG_DEBUG</code> 常量来判断当前是否应该输出日志。</p>
 <p>当然也可以用这个开关来控制开启严格模式等其他只适合在 <code>debug</code> 模式下开启的设置。</p>
@@ -77,8 +77,7 @@
     
     <summary type="html">
     
-      &lt;p&gt;啥也不说了，直接进入主题吧。本篇文章主要根据实际开发中遇到的需求，讲解使用 &lt;code&gt;Gradle&lt;/code&gt; 对应用的不同版本进行个性化定制。&lt;/p&gt;
-&lt;h1 id=&quot;场景介绍&quot;&gt;&lt;a href=&quot;#场景介绍&quot; class=&quot;headerlink&quot; title=&quot;场景
+      本篇文章主要根据实际开发中遇到的需求，讲解使用 `Gradle` 对应用的不同版本进行个性化定制。避免手动修改一些开关变量，导致误操作等等。
     
     </summary>
     
@@ -86,12 +85,6 @@
     
     
       <category term="Gradle" scheme="http://www.imliujun.com/tags/Gradle/"/>
-    
-      <category term="buildType" scheme="http://www.imliujun.com/tags/buildType/"/>
-    
-      <category term="productFlavor" scheme="http://www.imliujun.com/tags/productFlavor/"/>
-    
-      <category term="sgningConfigs" scheme="http://www.imliujun.com/tags/sgningConfigs/"/>
     
   </entry>
   

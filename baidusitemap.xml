@@ -5,19 +5,13 @@
     
   <url>
     <loc>http://www.imliujun.com/gradle1.html</loc>
-    <lastmod>2017-07-07T08:44:31.000Z</lastmod>
+    <lastmod>2017-07-07T09:08:50.000Z</lastmod>
     <data>
         <display>
         <title>使用 Gradle 对应用进行个性化定制</title>
         <pubTime>2017-07-07T08:19:23.000Z</pubTime>
         
         <tag>Gradle</tag>
-         
-        <tag>buildType</tag>
-         
-        <tag>productFlavor</tag>
-         
-        <tag>sgningConfigs</tag>
          
          
            
