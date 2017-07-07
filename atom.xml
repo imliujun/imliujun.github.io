@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.imliujun.com/"/>
-  <updated>2017-06-23T09:33:39.000Z</updated>
+  <updated>2017-07-07T08:44:31.000Z</updated>
   <id>http://www.imliujun.com/</id>
   
   <author>
@@ -14,6 +14,86 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>使用 Gradle 对应用进行个性化定制</title>
+    <link href="http://www.imliujun.com/gradle1.html"/>
+    <id>http://www.imliujun.com/gradle1.html</id>
+    <published>2017-07-07T08:19:23.000Z</published>
+    <updated>2017-07-07T08:44:31.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>啥也不说了，直接进入主题吧。本篇文章主要根据实际开发中遇到的需求，讲解使用 <code>Gradle</code> 对应用的不同版本进行个性化定制。</p>
+<h1 id="场景介绍"><a href="#场景介绍" class="headerlink" title="场景介绍"></a>场景介绍</h1><ol>
+<li>一般的应用基本上都有正式服和测试服，这个就不需要多说了。但是有些应用可能还有<code>超管服务器</code>专供运营人员使用，对应用内的一些内容进行监管，具有一些管理员才有的操作权限。</li>
+<li>开发过程中发布测试服务器的安装包需要在版本号后面增加版本序号，超管服务器的包在版本号后面增加<code>管理员</code>文字，线上包则正常显示版本号。</li>
+<li>每次打包 <code>versionCode</code> 自增，避免发版时忘记手动修改导致老版本不能覆盖安装。</li>
+<li>超管包的渠道名为 <code>admin</code>，日常运行的 <code>debug</code> 包渠道名为 <code>test</code>，上线的包使用加固软件进行多渠道加固。</li>
+<li><code>debug</code> 包和 <code>release</code> 包使用同样的签名，避免直接运行的 <code>debug</code> 包因为签名问题不能使用需要校验签名的第三方服务，比如：QQ 登录，微信登录，高德地图。</li>
+<li><code>debug</code> 包打印日志信息，<code>release</code> 包不打印日志信息</li>
+</ol>
+<p>以上某些场景从我工作以来就一直存在，以前用 <code>eclipse</code> 开发时除了每次都手动去修改一些开关变量也没啥好办法，可能是因为当时菜 ╮(╯▽╰)╭（如果你们有什么好方法的话）。后来切换到 <code>Android Studio</code> 后使用 <code>Gradle</code> 进行依赖管理已经让人很是欣喜，既然如此能不能使用 <code>Gradle</code> 将以上问题统统解决，完全自动化呢？答案是：必须的。</p>
+<h1 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h1><p>先上完整的 <code>Gradle</code> 配置。</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">android &#123;</div><div class="line">    compileSdkVersion <span class="number">25</span></div><div class="line">    buildToolsVersion <span class="string">"25.0.3"</span></div><div class="line">    defaultConfig &#123;</div><div class="line">        applicationId <span class="string">"com.imliujun.gradle"</span></div><div class="line">        minSdkVersion <span class="number">16</span></div><div class="line">        targetSdkVersion <span class="number">25</span></div><div class="line">        versionCode gitVersionCode()  <span class="comment">//获取 git 的 commit 次数</span></div><div class="line">        versionName rootProject.ext.versionName</div><div class="line"></div><div class="line">        manifestPlaceholders = [UMENG_APP_KEY      : <span class="string">"填你的友盟 APP KEY"</span>,</div><div class="line">                                UMENG_CHANNEL_VALUE: <span class="string">"默认的渠道名"</span>]</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    signingConfigs &#123;</div><div class="line">	<span class="comment">//在这里配置相关的签名信息</span></div><div class="line">        keyStore &#123;</div><div class="line">            storeFile <span class="keyword">file</span>(<span class="string">"test.jks"</span>)</div><div class="line">            storePassword <span class="string">"111111"</span></div><div class="line">            keyAlias <span class="string">"test"</span></div><div class="line">            keyPassword <span class="string">"111111"</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            <span class="comment">// 不显示Log</span></div><div class="line">            buildConfigField <span class="string">"boolean"</span>, <span class="string">"LOG_DEBUG"</span>, <span class="string">"false"</span></div><div class="line">            signingConfig signingConfigs.keyStore <span class="comment">//设置签名文件</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        debug &#123;</div><div class="line">            <span class="comment">// 显示Log</span></div><div class="line">            buildConfigField <span class="string">"boolean"</span>, <span class="string">"LOG_DEBUG"</span>, <span class="string">"true"</span></div><div class="line">            versionNameSuffix <span class="string">"-debug"</span>  <span class="comment">//设置后缀</span></div><div class="line">            signingConfig signingConfigs.keyStore  <span class="comment">//设置签名文件</span></div><div class="line">            manifestPlaceholders.UMENG_CHANNEL_VALUE = <span class="string">"test"</span> <span class="comment">//修改渠道名</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    productFlavors &#123;</div><div class="line">        offline &#123;</div><div class="line">            buildConfigField <span class="string">"String"</span>, <span class="string">"DOMAIN_NAME"</span>, <span class="string">"\"https://offline.domain.com/\""</span></div><div class="line">            versionName getTestVersionName() <span class="comment">//修改 versionName</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        online &#123;</div><div class="line">            buildConfigField <span class="string">"String"</span>, <span class="string">"DOMAIN_NAME"</span>, <span class="string">"\"https://online.domain.com/\""</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        admin &#123;</div><div class="line">            buildConfigField <span class="string">"String"</span>, <span class="string">"DOMAIN_NAME"</span>, <span class="string">"\"https://admin.domain.com/\""</span></div><div class="line">            versionName rootProject.ext.versionName + <span class="string">"-管理员"</span> <span class="comment">//修改 versionName</span></div><div class="line">            manifestPlaceholders.UMENG_CHANNEL_VALUE = <span class="string">"admin"</span> <span class="comment">//修改渠道名</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>根目录下的 <code>build.gradle</code> 文件进行如下配置，主要是将版本号和测试包的序号抽取出来：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">ext &#123;</div><div class="line">    versionName = <span class="string">"2.0.2"</span></div><div class="line">    testNum = <span class="string">"0001"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">def</span> getTestVersionName() &#123;</div><div class="line">    <span class="keyword">return</span> String.format(<span class="string">"%s.%s"</span>, rootProject.ext.versionName,</div><div class="line">            rootProject.ext.testNum)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> gitVersionCode() &#123;</div><div class="line">    <span class="keyword">def</span> <span class="keyword">count</span> = <span class="string">"git rev-list HEAD --count"</span>.execute().text.trim()</div><div class="line">    <span class="keyword">return</span> <span class="keyword">count</span>.isInteger() ? <span class="keyword">count</span>.<span class="keyword">toInteger</span>() : <span class="number">0</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>下面就根据场景来依次介绍对应的配置代码。</p>
+<h2 id="1-配置服务器版本"><a href="#1-配置服务器版本" class="headerlink" title="1. 配置服务器版本"></a>1. 配置服务器版本</h2><p>这里创建了三个 flavor，分别是 <code>offline 测试服</code>、<code>online 正式服</code>、<code>admin 超管服</code>。并且通过 <code>buildConfigField</code> 动态配置服务器的 URL 常量值到编译后自动生成的 <code>BuildConfig</code> 类中。</p>
+<p><img src="http://images.imliujun.com/static/images/Gradle/BuildConfig.png" alt="自动生成的 BuildConfig 类" title="BuildConfig"></p>
+<p>图中可以看到，不止有 <code>DOMAIN_NAME</code> 常量值，还有一个 <code>FLAVOR</code> 常量。这个 <code>FLAVOR</code> 常量中的值是 <code>offline</code> ,代表当前在 <code>offline</code> 这个版本上面。那怎么切换到其他的服务器呢？</p>
+<p><img src="http://images.imliujun.com/static/images/Gradle/SwitchBuildVariants.png" alt="切换不同的变种版本" title="BuildVariants"></p>
+<p>点开左下角的 <code>Build Variants</code>, 可以自由切换当前运行的版本。场景里面说的，需要在管理员包中开启一些高级的功能，可以判断 <code>FLAVOR</code> 的值是不是 <code>admin</code> ，如果是的话就显示管理员的操作布局。当然必不可少的要对用户权限进行校验哦。</p>
+<h2 id="2-定制-versionName"><a href="#2-定制-versionName" class="headerlink" title="2. 定制 versionName"></a>2. 定制 <code>versionName</code></h2><p>大家看上图 <code>BuildConfig</code> 类中 <code>VERSION_NAME</code> 常量的值为 <code>2.0.2.0001-debug</code>，当前是测试服的 <code>debug</code> 包，所以 versionName 应该是正常的 2.0.2 版本后面拼上当前出包的序号 0001 ，再拼上 <code>debug</code> 的后缀，所以完整的版本号是 <code>2.0.2.0001-debug</code>。</p>
+<p>看看不同服务器版本的 <code>VERSION_NAME</code> ：</p>
+<ul>
+<li><code>offlineRelease</code> 版本为 <code>2.0.2.0001</code></li>
+<li><code>offlineDebug</code>   版本为 <code>2.0.2.0001-debug</code></li>
+<li><code>adminRelease</code> 版本为 <code>2.0.2-管理员</code></li>
+<li><code>adminDebug</code>   版本为 <code>2.0.2-管理员-debug</code></li>
+<li><code>onlineRelease</code> 版本为 <code>2.0.2</code></li>
+<li><code>onlineDebug</code>   版本为 <code>2.0.2-debug</code></li>
+</ul>
+<p>如果我们接口需要上传版本号给服务器呢？肯定不能直接上传这些定制化后的 <code>VERSION_NAME</code>，那么我们在 <code>Gradle</code> 中增加一个 <code>buildConfigField</code> 将原始的版本号存起来就好了。</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">buildConfigField <span class="string">"String"</span>, <span class="string">"versionNumber"</span>, <span class="string">"\"$&#123;rootProject.ext.versionName&#125;\""</span></div></pre></td></tr></table></figure>
+<h2 id="3-versionCode-自增"><a href="#3-versionCode-自增" class="headerlink" title="3. versionCode 自增"></a>3. <code>versionCode</code> 自增</h2><p>这里采用了主流的方式，使用 <code>git</code> 的 <code>commit</code> 次数作为 <code>versionCode</code> 的值。不用担心这个值会超过 <code>int</code> 的上限，你得敲烂多少键盘才能提交 2147483648<br>次 <code>commit</code>。</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> gitVersionCode() &#123;</div><div class="line">    <span class="keyword">def</span> <span class="keyword">count</span> = <span class="string">"git rev-list HEAD --count"</span>.execute().text.trim()</div><div class="line">    <span class="keyword">return</span> <span class="keyword">count</span>.isInteger() ? <span class="keyword">count</span>.<span class="keyword">toInteger</span>() : <span class="number">0</span></div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<h2 id="4-个性化渠道名"><a href="#4-个性化渠道名" class="headerlink" title="4. 个性化渠道名"></a>4. 个性化渠道名</h2><p><code>Gradle</code> 多渠道打包的文章太多了，相关的基础我就不讲了。简单讲下本文相关的配置吧。</p>
+<p>通过定义 <code>manifestPlaceholders</code> 键值对，在 <code>AndroidManifest.xml</code> 文件中使用占位符的方式动态输入 <code>UMENG_APPKEY</code> 和 <code>UMENG_CHANNEL</code> 。</p>
+<p>然后在 <code>debug</code> 的 <code>buildType</code> 中修改渠道名为 <code>test</code>，在 <code>admin</code> 的 <code>Flavor</code> 中修改渠道名为 <code>admin</code>。如果选择 <code>adminDebug</code> 版本，则渠道名为 <code>test</code>，<code>buildType</code> 中的配置会覆盖掉 <code>Flavor</code> 中的配置。</p>
+<p>由于我们线上使用第三方加固，所以多渠道包就交给第三方加固软件来生成了。</p>
+<p>关于多渠道打包我还有两句话要说，以前使用 <code>Gradle</code> 进行多渠道打包，通过代码自定义修改 <code>apk</code> 文件的输出路径，<code>Android Studio</code> 编译的时候时不时的报一些文件找不到的错误，以前都是通过在 <code>Gradle</code> 文件中随便修改一点东西然后刷新一下 <code>Gradle</code> 文件来解决。现在我打包不修改输出路径，再也没遇到以前的那些问题了。</p>
+<p>建议大家使用 <code>assemble</code> 命令来进行打包，比如我要出一个测试包使用 <code>./gradlew assembleOfflineRelease</code> 命令，<code>apk</code> 文件生成在 <code>/build/outputs/apk/</code> 目录下。直接执行 <code>assemble</code> 命令是编译 <code>Build Variants</code> 中的所有包，如果你要编译指定版本的包，直接在 <code>assemble</code> 命令后面拼上指定的 <code>Build Variant</code> 就好了。</p>
+<h2 id="5-debug-包使用-release-签名"><a href="#5-debug-包使用-release-签名" class="headerlink" title="5. debug 包使用 release 签名"></a>5. <code>debug</code> 包使用 <code>release</code> 签名</h2><p>这个问题在 <code>eclipse</code> 时代，可以直接在设置里面配置 <code>debug</code> 签名文件为 <code>release</code> 的签名文件。<br>用 <code>Android Studio</code> 只需要在 <code>Gradle</code> 中配置就好了。</p>
+<p>首先配置签名文件的信息：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">signingConfigs &#123;</div><div class="line"> 	<span class="comment">//在这里配置相关的签名信息</span></div><div class="line">         keyStore &#123;</div><div class="line">             storeFile <span class="keyword">file</span>(<span class="string">"test.jks"</span>)</div><div class="line">             storePassword <span class="string">"111111"</span></div><div class="line">             keyAlias <span class="string">"test"</span></div><div class="line">             keyPassword <span class="string">"111111"</span></div><div class="line">         &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然后在 <code>buildTypes</code> 中设置签名信息：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            signingConfig signingConfigs.keyStore <span class="comment">//设置签名文件</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        debug &#123;</div><div class="line">            signingConfig signingConfigs.keyStore  <span class="comment">//设置签名文件</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h2 id="6-日志开关"><a href="#6-日志开关" class="headerlink" title="6. 日志开关"></a>6. 日志开关</h2><p>这个太简单了，不想单独列出来。不过上面场景里面提出来了，就简单一行代码展示吧。</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">release &#123;</div><div class="line">	<span class="comment">// 不显示Log</span></div><div class="line">		buildConfigField <span class="string">"boolean"</span>, <span class="string">"LOG_DEBUG"</span>, <span class="string">"false"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">debug &#123;</div><div class="line">	<span class="comment">// 显示Log</span></div><div class="line">	buildConfigField <span class="string">"boolean"</span>, <span class="string">"LOG_DEBUG"</span>, <span class="string">"true"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在日志工具类中使用 <code>BuildConfig</code> 类中的 <code>LOG_DEBUG</code> 常量来判断当前是否应该输出日志。</p>
+<p>当然也可以用这个开关来控制开启严格模式等其他只适合在 <code>debug</code> 模式下开启的设置。</p>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>唧唧歪歪说了这么多，在懂的人眼中自然很简单，在对 <code>gradle</code> 一点都不了解的人眼中就可以直接复制过去用了。当然我是不建议直接复制，毕竟需求稍微一改，你可能就束手无策了。建议大家还是以理解为主，掌握其原理自然一通百通。</p>
+<p><center>欢迎关注微信公众号：<strong>大脑好饿</strong>，更多干货等你来尝</center><br><img title="公众号：大脑好饿" src="http://images.imliujun.com/static/images/wx_qrcode.png"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;啥也不说了，直接进入主题吧。本篇文章主要根据实际开发中遇到的需求，讲解使用 &lt;code&gt;Gradle&lt;/code&gt; 对应用的不同版本进行个性化定制。&lt;/p&gt;
+&lt;h1 id=&quot;场景介绍&quot;&gt;&lt;a href=&quot;#场景介绍&quot; class=&quot;headerlink&quot; title=&quot;场景
+    
+    </summary>
+    
+      <category term="Android" scheme="http://www.imliujun.com/categories/Android/"/>
+    
+    
+      <category term="Gradle" scheme="http://www.imliujun.com/tags/Gradle/"/>
+    
+      <category term="buildType" scheme="http://www.imliujun.com/tags/buildType/"/>
+    
+      <category term="productFlavor" scheme="http://www.imliujun.com/tags/productFlavor/"/>
+    
+      <category term="sgningConfigs" scheme="http://www.imliujun.com/tags/sgningConfigs/"/>
+    
+  </entry>
   
   <entry>
     <title>Lottie -- 轻松实现动态加载直播礼物动画</title>
@@ -125,7 +205,7 @@
     <link href="http://www.imliujun.com/hello-world.html"/>
     <id>http://www.imliujun.com/hello-world.html</id>
     <published>2015-12-10T10:22:58.000Z</published>
-    <updated>2017-04-26T03:06:53.000Z</updated>
+    <updated>2017-06-28T06:50:51.000Z</updated>
     
     <content type="html"><![CDATA[<p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
 <h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>

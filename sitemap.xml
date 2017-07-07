@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.imliujun.com/gradle1.html</loc>
+    
+    <lastmod>2017-07-07T08:44:31.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.imliujun.com/hello-world.html</loc>
+    
+    <lastmod>2017-06-28T06:50:51.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.imliujun.com/Lottie%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B4%E6%92%AD%E7%A4%BC%E7%89%A9%E5%8A%A8%E7%94%BB.html</loc>
     
     <lastmod>2017-06-23T09:33:39.000Z</lastmod>
@@ -19,13 +33,6 @@
     <loc>http://www.imliujun.com/404.html</loc>
     
     <lastmod>2017-06-01T12:04:07.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.imliujun.com/hello-world.html</loc>
-    
-    <lastmod>2017-04-26T03:06:53.000Z</lastmod>
     
   </url>
   
