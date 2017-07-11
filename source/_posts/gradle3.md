@@ -244,6 +244,26 @@ flavorDimensions "APP", "SERVER"
 
 是不是每个应用都有 3 个服务器版本，每个版本都有 `debug` 和 `release` 包。
 
+## 配置不同的包名
+
+我们要实现多应用，必须能安装在同一台手机上。所以不同应用之间的包名得不一样。
+
+在 `APP` 维度的 `flavor` 中设置不同的 `applicationId`，就可以实现修改应用包名。
+
+```gradle
+app1{
+    applicationId 'com.imliujun.app1'
+}
+
+app2{
+    applicationId 'com.imliujun.app2'
+}
+```
+
+这样配置后，`app1` 和 `app2` 就能够安装在同一台手机上，也能同时上传应用商店。
+
+有一点大家切记，`AndroidManifest.xml` 中的 `package` 不需要去修改，R 文件的路径是根据这个 `package` 来生成的。如果对 `package` 进行修改，R 文件的路径也会改变，所有引用到 R 文件的类都需要进行修改。 
+
 ## 动态配置 URL 和版本号
 
 既然每个 Build Variant 都是由不同维度的 Product Flavors 和 Build Type 组合而来，我们肯定不能像上一篇文章一样将服务器的 URL 配置在 `offline`、`online`、`admin` 中了，因为 `app1Offline` 和 `app2Offline` 同样是测试服，但不是同一个应用 URL 也不一样。
@@ -397,7 +417,7 @@ manifestPlaceholders = [APPLICATIONID : applicationId]
 
 如果使用了 `ShareSDK` 做第三方分享和登录，需要配置 `ShareSDK.xml` 放到 `assets` 文件夹下，将 `main/assets/ShareSDK.xml` 复制一份到 `app2/assets/ShareSDK.xml`，将里面的第三方 APP ID 和 APP KEY 替换一下就可以了。
 
-项目如果使用了 `ContentProvider` 要注意替换 `authorities`，可以和上面动态配置 Activity 包名一样操作，用信鸽 SDK 演示一下：
+项目如果使用了 `ContentProvider` 要注意替换 `authorities`，如果 `authorities` 里面的值是一样的，手机上只能装一个应用哦，可以和上面动态配置 Activity 包名一样操作，用信鸽 SDK 演示一下：
 
 ```xml
  <!-- 【必须】 【注意】authorities修改为 包名.AUTH_XGPUSH, 如demo的包名为：com.qq.xgdemo -->
