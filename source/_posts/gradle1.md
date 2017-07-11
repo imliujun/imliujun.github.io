@@ -223,6 +223,12 @@ debug {
 
 唧唧歪歪说了这么多，在懂的人眼中自然很简单，在对 `gradle` 一点都不了解的人眼中就可以直接复制过去用了。当然我是不建议直接复制，毕竟需求稍微一改，你可能就束手无策了。建议大家还是以理解为主，掌握其原理自然一通百通。
 
+# 相关阅读
+
+[Android Studio 3.0 上 Gradle 改动](http://www.imliujun.com/gradle2.html)
+
+[使用 Gradle 实现一套代码开发多个应用](http://www.imliujun.com/gradle3.html)
+
 <center>欢迎关注微信公众号：**大脑好饿**，更多干货等你来尝</center>
 {% qnimg wx_qrcode.png title:公众号：大脑好饿  %}
 
