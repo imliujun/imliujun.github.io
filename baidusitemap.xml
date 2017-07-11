@@ -4,8 +4,48 @@
 
     
   <url>
+    <loc>http://www.imliujun.com/gradle3.html</loc>
+    <lastmod>2017-07-11T07:30:00.000Z</lastmod>
+    <data>
+        <display>
+        <title>使用 Gradle 实现一套代码开发多个应用</title>
+        <pubTime>2017-07-11T07:06:23.000Z</pubTime>
+        
+        <tag>Gradle</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android" url="http://www.imliujun.com/categories/Android/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.imliujun.com/gradle2.html</loc>
+    <lastmod>2017-07-11T07:23:24.000Z</lastmod>
+    <data>
+        <display>
+        <title>Android Studio 3.0 上 Gradle 改动</title>
+        <pubTime>2017-07-11T07:02:19.000Z</pubTime>
+        
+        <tag>Gradle</tag>
+         
+         
+           
+             
+              <breadCrumb title="Android" url="http://www.imliujun.com/categories/Android/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.imliujun.com/gradle1.html</loc>
-    <lastmod>2017-07-07T11:29:34.000Z</lastmod>
+    <lastmod>2017-07-11T07:23:19.000Z</lastmod>
     <data>
         <display>
         <title>使用 Gradle 对应用进行个性化定制</title>
