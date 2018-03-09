@@ -262,7 +262,7 @@ app2{
 
 这样配置后，`app1` 和 `app2` 就能够安装在同一台手机上，也能同时上传应用商店。
 
-有一点大家切记，`AndroidManifest.xml` 中的 `package` 不需要去修改，R 文件的路径是根据这个 `package` 来生成的。如果对 `package` 进行修改，R 文件的路径也会改变，所有引用到 R 文件的类都需要进行修改。 
+有一点大家切记，`AndroidManifest.xml` 中的 `package` 不需要去修改，R 文件的路径是根据这个 `package` 来生成的。如果对 `package` 进行修改，R 文件的路径也会改变，所有引用到 R 文件的类都需要进行修改。
 
 ## 动态配置 URL 和版本号
 
@@ -430,6 +430,8 @@ manifestPlaceholders = [APPLICATIONID : applicationId]
 # 总结
 
 上面的内容基本涉及到所有的方面，其他的细节也好，特殊的需求定制也好，使用上面的方式去处理都能够解决。希望大家不要光学会复制粘贴，要掌握其原理，遇到类似的需求就能举一反三。
+
+> demo地址：https://github.com/imliujun/GradleTest
 
 总结一下技术点：
 
