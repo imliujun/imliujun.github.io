@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.imliujun.com/"/>
-  <updated>2017-07-13T12:20:46.000Z</updated>
+  <updated>2018-03-21T16:32:10.048Z</updated>
   <id>http://www.imliujun.com/</id>
   
   <author>
@@ -16,11 +16,71 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>线程安全引起的录音杂音电流音问题</title>
+    <link href="http://www.imliujun.com/recording1.html"/>
+    <id>http://www.imliujun.com/recording1.html</id>
+    <published>2018-03-21T16:29:24.000Z</published>
+    <updated>2018-03-21T16:32:10.048Z</updated>
+    
+    <content type="html"><![CDATA[<p>前段时间写了一个录音模块，需求是：『录音的时候实时语音转文字，实时计算音量大小，实时进行 MP3 转码保存为文件』</p>
+<p>首先进行需求分析，确定技术方案：</p>
+<ol>
+<li>使用 AudioRecord 进行录音，实时获取原始音频数据</li>
+<li>将音频数据传递给第三方语音转文字 SDK 进行处理</li>
+<li>对音频数据进行处理，计算出音量大小</li>
+<li>对音频数据进行 MP3 编码</li>
+<li>将编码后的数据写入 MP3 文件</li>
+</ol>
+<p>整个业务流程如上，只不过我们为了效率和解耦，将每个处理逻辑独立开来使用多线程进行并发处理。</p>
+<p>具体流程见下图：</p>
+<img title="录音流程图" src="http://images.imliujun.com/static/images/Recording/RecordingFlowChart.jpeg">
+<h2 id="代码撸起来"><a href="#代码撸起来" class="headerlink" title="代码撸起来"></a>代码撸起来</h2><p>下面的伪代码全部使用 <code>kotlin</code> 展示，不熟悉 <code>kotlin</code> 没关系，只需要关注具体的业务逻辑。</p>
+<h3 id="音频数据采集"><a href="#音频数据采集" class="headerlink" title="音频数据采集"></a>音频数据采集</h3><p>首先创建一个线程给 AudioRecord 进行录音采集：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> emitter: FlowableProcessor&lt;ShortArray&gt;</div><div class="line"><span class="keyword">val</span> isRecording = AtomicBoolean()</div><div class="line"></div><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">run</span><span class="params">()</span></span> &#123;</div><div class="line">  <span class="keyword">var</span> buffer = ShortArray(bufferSize)</div><div class="line">  <span class="keyword">while</span> (isRecording.<span class="keyword">get</span>()) &#123;</div><div class="line">    <span class="keyword">val</span> readSize = audioRecord.read(buffer, <span class="number">0</span>, bufferSize)</div><div class="line">    <span class="keyword">if</span> (readSize &gt; <span class="number">0</span>) &#123;</div><div class="line">      <span class="comment">//将数据使用 RxJava 发送出去</span></div><div class="line">      emitter.onNext(buffer)</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们在子线程中读取到音频数据，并且通过 RxJava 将数据向下传递。<strong>（用什么传递不重要，重要的是将数据传递给下一层去进行处理）</strong></p>
+<h3 id="对数据进行处理"><a href="#对数据进行处理" class="headerlink" title="对数据进行处理"></a>对数据进行处理</h3><p>外部接收 RxJava 的事件，对音频数据进行处理 <strong>（再次提醒，不需要在意细节，主要关注业务流程）</strong> ：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 使用 observeOnIo() 操作将线程切换到 IO 线程</span></div><div class="line">recorder?.start()?.observeOnIo()?.subscribe&#123; it:ShortArray -&gt;</div><div class="line">  <span class="comment">//此时的代码和录音采集的代码分别执行在不同的线程上了</span></div><div class="line"></div><div class="line">  <span class="comment">//计算音量大小</span></div><div class="line">  <span class="keyword">val</span> volume = calVolume(it)</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">recorder?.start()?.observeOnIo()?.subscribe&#123; it:ShortArray -&gt;</div><div class="line">  <span class="comment">//此时的代码和录音采集的代码分别执行在不同的线程上了</span></div><div class="line"></div><div class="line">  <span class="comment">//将 ShortArray 转换为 ByteArray</span></div><div class="line">  <span class="keyword">var</span> pcmBuffer: ByteArray = ...</div><div class="line">  it.toByteArray(pcmBuffer)</div><div class="line"></div><div class="line">  <span class="comment">//语音转文字</span></div><div class="line">  ...</div><div class="line">&#125;</div><div class="line"></div><div class="line">recorder?.start()?.observeOnIo()?.subscribe&#123; it:ShortArray -&gt;</div><div class="line">  <span class="comment">//此时的代码和录音采集的代码分别执行在不同的线程上了</span></div><div class="line"></div><div class="line">  <span class="comment">//进行 MP3 编码</span></div><div class="line">  <span class="keyword">val</span> encode = mp3Encode(it)</div><div class="line">  <span class="keyword">if</span> (encode != <span class="literal">null</span> &amp;&amp; encode &gt; <span class="number">0</span>) &#123;</div><div class="line">    <span class="comment">// 将编码后的数据写入文件</span></div><div class="line">    mp3Stream.write(mp3Buffer, <span class="number">0</span>, encode)</div><div class="line">  &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>整个业务流程就是这样，我自己使用的手机和公司所有的测试机，试听录制出来的 MP3 文件都没有问题。</p>
+<p>开开心心的打包，测试，上线。</p>
+<p>然后你懂的，有些用户录制出现杂音、电流音、声音断断续续。😂😂</p>
+<p>机智的同学可能通过标题已经猜到了问题的原因，但我当时没有手机进行问题复现，为了解决这个问题可是花了很大的功夫才定位到问题所在。</p>
+<h3 id="解决杂音问题"><a href="#解决杂音问题" class="headerlink" title="解决杂音问题"></a>解决杂音问题</h3><p>因为我们在录音采集时将数据读取到 <code>buffer</code> 对象中，然后将 <code>buffer</code> 对象通过 RxJava 向下传递，因为 RxJava 的下游都开启了异步线程去处理事件，那么在录音采集的死循环中不等当前的数据进行 MP3 编码完毕就对 <code>buffer</code> 对象写入新采集到的音频数据，这个时候 MP3 编码出来的音频数据就被污染了。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> emitter: FlowableProcessor&lt;ShortArray&gt;</div><div class="line"><span class="keyword">val</span> isRecording = AtomicBoolean()</div><div class="line"></div><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">run</span><span class="params">()</span></span> &#123;</div><div class="line">  <span class="keyword">var</span> buffer = ShortArray(bufferSize)</div><div class="line">  <span class="keyword">while</span> (isRecording.<span class="keyword">get</span>()) &#123;</div><div class="line">    <span class="comment">// 读取音频数据到 buffer 中</span></div><div class="line">    <span class="keyword">val</span> readSize = audioRecord.read(buffer, <span class="number">0</span>, bufferSize)</div><div class="line">    <span class="keyword">if</span> (readSize &gt; <span class="number">0</span>) &#123;</div><div class="line">      <span class="comment">//将 buffer 发送出去，因为下游是异步处理，所以执行完毕直接开始下次循环</span></div><div class="line">      emitter.onNext(buffer)</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>要解决这个问题很简单：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 将 buffer 数据 copy 一份进行传递，这样就不会修改下游的数据了</span></div><div class="line">emitter.onNext(buffer.copyOf())</div></pre></td></tr></table></figure>
+<p>但是使用 copy 的方式会频繁的创建、销毁 ShortArray 对象，能不能优化一下呢？</p>
+<p>我们可以使用对象池来管理 ShortArray，这样就不会频繁的进行创建、销毁操作。在 Android 的 support.v4 包中有一个 <code>Pools</code> 类实现了简单的对象池功能：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">val</span> bufferPool = Pools.SynchronizedPool&lt;ShortArray&gt;(<span class="number">10</span>)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">acquireBuffer</span><span class="params">(bufferSize: <span class="type">Int</span>)</span></span>: ShortArray &#123;</div><div class="line">  <span class="keyword">var</span> buffer = bufferPool.acquire()</div><div class="line">  <span class="keyword">if</span> (buffer == <span class="literal">null</span> || buffer.size != bufferSize) &#123;</div><div class="line">    buffer = ShortArray(bufferSize)</div><div class="line">  &#125;</div><div class="line">  <span class="keyword">return</span> buffer</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fun</span> <span class="title">releaseBuffer</span><span class="params">(shortArray: <span class="type">ShortArray</span>)</span></span> &#123;</div><div class="line">  <span class="keyword">try</span> &#123;</div><div class="line">    bufferPool.release(shortArray)</div><div class="line">  &#125; <span class="keyword">catch</span> (e: Exception) &#123;</div><div class="line">    Timber.e(e)</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">run</span><span class="params">()</span></span> &#123;</div><div class="line">  <span class="keyword">while</span> (isRecording.<span class="keyword">get</span>()) &#123;</div><div class="line">    <span class="comment">//通过对象池获取 buffer 对象</span></div><div class="line">    <span class="keyword">val</span> buffer = acquireBuffer(bufferSize)</div><div class="line">    <span class="comment">// 读取音频数据到 buffer 中</span></div><div class="line">    <span class="keyword">val</span> readSize = audioRecord.read(buffer, <span class="number">0</span>, bufferSize)</div><div class="line">    <span class="keyword">if</span> (readSize &gt; <span class="number">0</span>) &#123;</div><div class="line">      <span class="comment">//将 buffer 发送出去，下游处理完毕后调用 releaseBuffer 对 buffer 对象进行释放</span></div><div class="line">      emitter.onNext(buffer)</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>很简单的一个多线程并发问题，但是当我们自己不能复现的时候，还是带来了很大的麻烦。<br>这种问题在编写 <code>emitter.onNext(buffer)</code> 这行代码的时候就应该要考虑到线程安全问题，并且我之前做直播截屏的时候也遇到过类似的问题，截取直播流的画面帧保存为图片，因为截屏的操作不会很频繁，当时是直接 copy 一份画面帧的数据保存为图片。</p>
+<p>可是以前没有写博客记录这种小问题，导致遇到类似的问题尽量不记得了。所以这次记录下来😂😂。</p>
+<p><center>欢迎关注微信公众号：<strong>大脑好饿</strong>，更多干货等你来尝</center><br><img title="公众号：大脑好饿" src="http://images.imliujun.com/static/images/wx_qrcode.png"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;前段时间写了一个录音模块，需求是：『录音的时候实时语音转文字，实时计算音量大小，实时进行 MP3 转码保存为文件』&lt;/p&gt;
+&lt;p&gt;首先进行需求分析，确定技术方案：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;使用 AudioRecord 进行录音，实时获取原始音频数据&lt;/li&gt;
+&lt;li&gt;将音
+    
+    </summary>
+    
+      <category term="Android" scheme="http://www.imliujun.com/categories/Android/"/>
+    
+    
+      <category term="录音" scheme="http://www.imliujun.com/tags/%E5%BD%95%E9%9F%B3/"/>
+    
+      <category term="AudioRecord" scheme="http://www.imliujun.com/tags/AudioRecord/"/>
+    
+  </entry>
+  
+  <entry>
     <title>使用 Gradle 实现一套代码开发多个应用</title>
     <link href="http://www.imliujun.com/gradle3.html"/>
     <id>http://www.imliujun.com/gradle3.html</id>
     <published>2017-07-11T07:06:23.000Z</published>
-    <updated>2017-07-13T12:20:46.000Z</updated>
+    <updated>2018-03-09T04:51:51.137Z</updated>
     
     <content type="html"><![CDATA[<p>在文章 <a href="http://www.imliujun.com/gradle1.html">使用 Gradle 对应用进行个性化定制</a> 中，我们能够针对一个应用的正式服、测试服、超管服等其他版本，进行个性化定制。<br>这一篇文章我们来点大动作，让你用一套代码构建多个应用。</p>
 <h1 id="场景介绍"><a href="#场景介绍" class="headerlink" title="场景介绍"></a>场景介绍</h1><p>需求：“将某个应用换一套皮肤、第三方账号、后台服务器，改个名字上线，并且以后的新功能同步进行更新”。</p>
