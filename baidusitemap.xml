@@ -1,133 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-
-    
   <url>
     <loc>http://www.imliujun.com/recording1.html</loc>
-    <lastmod>2018-03-21T16:32:10.048Z</lastmod>
-    <data>
-        <display>
-        <title>线程安全引起的录音杂音电流音问题</title>
-        <pubTime>2018-03-21T16:29:24.000Z</pubTime>
-        
-        <tag>录音</tag>
-         
-        <tag>AudioRecord</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android" url="http://www.imliujun.com/categories/Android/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
+    <lastmod>2018-03-21T16:32:10.000Z</lastmod>
+  </url>  <url>
     <loc>http://www.imliujun.com/gradle3.html</loc>
-    <lastmod>2018-03-09T04:51:51.137Z</lastmod>
-    <data>
-        <display>
-        <title>使用 Gradle 实现一套代码开发多个应用</title>
-        <pubTime>2017-07-11T07:06:23.000Z</pubTime>
-        
-        <tag>Gradle</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android" url="http://www.imliujun.com/categories/Android/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
+    <lastmod>2018-03-09T04:51:51.000Z</lastmod>
+  </url>  <url>
     <loc>http://www.imliujun.com/gradle2.html</loc>
     <lastmod>2017-07-11T07:23:24.000Z</lastmod>
-    <data>
-        <display>
-        <title>Android Studio 3.0 上 Gradle 改动</title>
-        <pubTime>2017-07-11T07:02:19.000Z</pubTime>
-        
-        <tag>Gradle</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android" url="http://www.imliujun.com/categories/Android/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
+  </url>  <url>
     <loc>http://www.imliujun.com/gradle1.html</loc>
     <lastmod>2017-07-11T07:23:19.000Z</lastmod>
-    <data>
-        <display>
-        <title>使用 Gradle 对应用进行个性化定制</title>
-        <pubTime>2017-07-07T08:19:23.000Z</pubTime>
-        
-        <tag>Gradle</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android" url="http://www.imliujun.com/categories/Android/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
+  </url>  <url>
     <loc>http://www.imliujun.com/hello-world.html</loc>
     <lastmod>2017-06-28T06:50:51.000Z</lastmod>
-    <data>
-        <display>
-        <title>Hello World</title>
-        <pubTime>2015-12-10T10:22:58.000Z</pubTime>
-        
-         
-           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
+  </url>  <url>
     <loc>http://www.imliujun.com/Lottie%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B4%E6%92%AD%E7%A4%BC%E7%89%A9%E5%8A%A8%E7%94%BB.html</loc>
     <lastmod>2017-06-23T09:33:39.000Z</lastmod>
-    <data>
-        <display>
-        <title>Lottie -- 轻松实现动态加载直播礼物动画</title>
-        <pubTime>2017-04-24T23:27:11.000Z</pubTime>
-        
-        <tag>Lottie</tag>
-         
-        <tag>直播</tag>
-         
-        <tag>动态加载</tag>
-         
-        <tag>礼物</tag>
-         
-        <tag>动画</tag>
-         
-         
-           
-             
-              <breadCrumb title="Android" url="http://www.imliujun.com/categories/Android/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-    
-    
+  </url>
 </urlset>
