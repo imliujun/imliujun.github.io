@@ -230,7 +230,7 @@ debug {
 [使用 Gradle 实现一套代码开发多个应用](http://www.imliujun.com/gradle3.html)
 
 <center>欢迎关注微信公众号：**大脑好饿**，更多干货等你来尝</center>
-{% qnimg wx_qrcode.png title:公众号：大脑好饿  %}
+{% qnimg wx_qrcode.gif title:公众号：大脑好饿  %}
 
 [image-1]:	http://images.imliujun.com/static/images/Gradle/BuildConfig.png "BuildConfig"
 [image-2]:	http://images.imliujun.com/static/images/Gradle/SwitchBuildVariants.png "BuildVariants"

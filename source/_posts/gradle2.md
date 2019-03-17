@@ -50,4 +50,4 @@ flavorDimensions "SERVER"
 
 
 <center>欢迎关注微信公众号：**大脑好饿**，更多干货等你来尝</center>
-![公众号：大脑好饿 ](http://images.imliujun.com/static/images/wx_qrcode.png)
+![公众号：大脑好饿 ](http://images.imliujun.com/static/images/wx_qrcode.gif)

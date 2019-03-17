@@ -7,6 +7,6 @@ date: 2017-02-13 19:45:15
 
 <i class="fa fa-github" aria-hidden="true"> GItHub: [@imliujun](https://github.com/imliujun)</i>
 
-<i class="fa fa-weixin" aria-hidden="true"> 微信公众号: **大脑好饿** {% qnimg wx_qrcode.png title:公众号：大脑好饿  %} </i>
+<i class="fa fa-weixin" aria-hidden="true"> 微信公众号: **大脑好饿** {% qnimg wx_qrcode.gif title:公众号：大脑好饿  %} </i>
 
 <iframe src="http://www.imliujun.com/donate-page/simple/" style="overflow-x:hidden;overflow-y:hidden; border:0xp none #fff; min-height:240px; width:250px;"  frameborder="0" scrolling="no"></iframe>

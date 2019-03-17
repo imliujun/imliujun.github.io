@@ -173,4 +173,4 @@ description:
 可是以前没有写博客记录这种小问题，导致遇到类似的问题尽量不记得了。所以这次记录下来😂😂。
 
 <center>欢迎关注微信公众号：**大脑好饿**，更多干货等你来尝</center>
-{% qnimg wx_qrcode.png title:公众号：大脑好饿  %}
+{% qnimg wx_qrcode.gif title:公众号：大脑好饿  %}
