@@ -118,7 +118,7 @@ productFlavors {
 
         admin {
             buildConfigField "String", "DOMAIN_NAME", "\"https://admin.domain.com/\""
-            versionName versionName getTestVersionName("管理员") //修改 versionName
+            versionName getTestVersionName("管理员") //修改 versionName
         }
 }
 
